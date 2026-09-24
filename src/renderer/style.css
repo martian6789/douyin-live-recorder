@@ -1,0 +1,451 @@
+/**
+ * 全局样式与设计令牌。
+ *
+ * 视觉基调：深墨框架（顶栏 + 侧栏）+ 暖纸内容区 + 赭红/松绿强调 + 衬线标题。
+ * 所有颜色都走 CSS 变量，深色主题只需换一组变量，组件里不写死颜色。
+ */
+
+:root {
+  /* 纸面（内容区） */
+  --paper: #fdfcf9;
+  --paper-2: #f7f4ee;
+  --paper-3: #f0ebe1;
+  --line: #e6dfd2;
+  --line-strong: #d8cdb9;
+
+  /* 框架（顶栏 + 侧栏）：暖墨深色，与纸面形成明暗层次 */
+  --frame: #29241f;
+  --frame-2: #322c26;
+  --frame-3: #3c352d;
+  --frame-line: rgba(255, 255, 255, 0.07);
+  --frame-ink: #f0e9de;
+  --frame-ink-2: #b8b0a2;
+  --frame-ink-3: #8d8579;
+  --frame-hover: rgba(255, 255, 255, 0.06);
+
+  /* 墨色 */
+  --ink: #24211c;
+  --ink-2: #57514a;
+  --ink-3: #8b8378;
+  --ink-4: #b3a99a;
+
+  /* 强调 */
+  --zhu: #a8322d; /* 赭红 */
+  --song: #2f6b4f; /* 松绿 */
+  --jin: #b8860b; /* 赭金 */
+  --lan: #2f5d8a; /* 靛青（辅助） */
+  --zhu-bright: #d4665f; /* 深底上的亮赭红 */
+  --song-bright: #6db391; /* 深底上的亮松绿 */
+
+  --zhu-soft: rgba(168, 50, 45, 0.1);
+  --song-soft: rgba(47, 107, 79, 0.1);
+  --jin-soft: rgba(184, 134, 11, 0.12);
+
+  --radius: 10px;
+  --radius-sm: 7px;
+  --shadow-1: 0 1px 2px rgba(60, 50, 35, 0.05), 0 2px 10px rgba(60, 50, 35, 0.05);
+  --shadow-2: 0 6px 22px rgba(60, 50, 35, 0.12);
+
+  --titlebar-h: 42px;
+  --sidebar-w: 214px;
+
+  --font-ui: 'Microsoft YaHei UI', 'Microsoft YaHei', 'PingFang SC', 'Segoe UI', system-ui,
+    -apple-system, sans-serif;
+  --font-serif: 'Source Han Serif SC', 'Noto Serif SC', 'Songti SC', SimSun, 'STSong', serif;
+
+  /* Element Plus 主题变量映射 */
+  --el-color-primary: var(--zhu);
+  --el-color-primary-light-3: #c05b55;
+  --el-color-primary-light-5: #d18883;
+  --el-color-primary-light-7: #e2b5b2;
+  --el-color-primary-light-8: #ecd0ce;
+  --el-color-primary-light-9: #f6e9e8;
+  --el-color-primary-dark-2: #8c2723;
+  --el-color-success: var(--song);
+  --el-color-warning: var(--jin);
+  --el-color-danger: var(--zhu);
+  --el-color-info: var(--ink-3);
+  --el-border-radius-base: var(--radius-sm);
+  --el-font-family: var(--font-ui);
+  --el-font-size-base: 14px;
+  --el-font-size-small: 13px;
+  --el-font-size-extra-small: 12px;
+  --el-text-color-primary: var(--ink);
+  --el-text-color-regular: var(--ink-2);
+  --el-text-color-secondary: var(--ink-3);
+  --el-border-color: var(--line);
+  --el-border-color-light: var(--line);
+  --el-border-color-lighter: var(--line);
+  --el-fill-color-blank: var(--paper);
+  --el-bg-color: var(--paper);
+  --el-bg-color-overlay: var(--paper);
+}
+
+html[data-theme='dark'] {
+  --paper: #191713;
+  --paper-2: #211e19;
+  --paper-3: #2a2620;
+  --line: #35302a;
+  --line-strong: #443d35;
+
+  --frame: #14110d;
+  --frame-2: #1d1915;
+  --frame-3: #272219;
+  --frame-line: rgba(255, 255, 255, 0.07);
+
+  --ink: #ede7dd;
+  --ink-2: #bdb5a8;
+  --ink-3: #8d857a;
+  --ink-4: #6a635a;
+
+  --zhu: #d4665f;
+  --song: #5fa77f;
+  --jin: #d9a93a;
+  --lan: #6f9ecb;
+
+  --zhu-soft: rgba(212, 102, 95, 0.16);
+  --song-soft: rgba(95, 167, 127, 0.16);
+  --jin-soft: rgba(217, 169, 58, 0.16);
+
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-2: 0 6px 20px rgba(0, 0, 0, 0.5);
+
+  --el-color-primary: var(--zhu);
+  --el-color-primary-light-3: #b85550;
+  --el-color-primary-light-5: #9c4a45;
+  --el-color-primary-light-7: #6d3733;
+  --el-color-primary-light-8: #4f2b28;
+  --el-color-primary-light-9: #33201e;
+  --el-color-primary-dark-2: #e08b85;
+  --el-color-success: var(--song);
+  --el-color-warning: var(--jin);
+  --el-color-danger: var(--zhu);
+  --el-color-info: var(--ink-3);
+  --el-text-color-primary: var(--ink);
+  --el-text-color-regular: var(--ink-2);
+  --el-text-color-secondary: var(--ink-3);
+  --el-border-color: var(--line);
+  --el-border-color-light: var(--line);
+  --el-border-color-lighter: var(--line);
+  --el-fill-color-blank: var(--paper);
+  --el-bg-color: var(--paper);
+  --el-bg-color-overlay: var(--paper-2);
+  --el-fill-color-light: var(--paper-2);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  user-select: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+.serif {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+/* ---------------------------------------------------------------- 滚动条 */
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-4);
+}
+
+/* ---------------------------------------------------------------- 通用件 */
+.panel {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-1);
+}
+
+.panel-title {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 标题左侧色块（延续文档体系里的样式） */
+.panel-title::before {
+  content: '';
+  width: 3px;
+  height: 15px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--zhu), var(--jin));
+}
+
+.hint {
+  color: var(--ink-3);
+  font-size: 13px;
+}
+
+.mono {
+  font-family: 'Cascadia Mono', Consolas, 'Courier New', monospace;
+  font-size: 12.5px;
+}
+
+.empty {
+  padding: 48px 0;
+  text-align: center;
+  color: var(--ink-3);
+}
+
+/* 平台色点 */
+.dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+
+/* 状态胶囊 */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 10px;
+  border-radius: 11px;
+  font-size: 12px;
+  line-height: 19px;
+  background: var(--paper-3);
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.pill.living {
+  background: var(--zhu-soft);
+  color: var(--zhu);
+}
+.pill.offline {
+  background: var(--paper-3);
+  color: var(--ink-3);
+}
+.pill.recording {
+  background: var(--song-soft);
+  color: var(--song);
+}
+.pill.error {
+  background: var(--jin-soft);
+  color: var(--jin);
+}
+
+/* 呼吸点（正在直播 / 正在录制） */
+.blink {
+  animation: blink 1.4s ease-in-out infinite;
+}
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* 让按钮里的图标与文字对齐 */
+.el-button .el-icon + span {
+  margin-left: 4px;
+}
+
+/* 表格 */
+.el-table {
+  --el-table-border-color: var(--line);
+  --el-table-header-bg-color: var(--paper-2);
+  --el-table-row-hover-bg-color: var(--paper-2);
+  font-size: 13.5px;
+}
+.el-table th.el-table__cell {
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+/* 卡片默认靠边框而非阴影，整体更“纸” */
+.el-card {
+  --el-card-border-color: var(--line);
+  --el-card-bg-color: var(--paper);
+}
+
+/* 对话框标题用衬线 */
+.el-dialog__title {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* 页面切换动画（轻微，不做花哨动效） */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.12s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* ---------------------------------------------------------------- 界面质感 */
+
+/* 页面大标题：衬线 + 主色左竖块，延续文档体系 */
+.page-head h2 {
+  position: relative;
+  padding-left: 13px;
+  font-size: 22px;
+  letter-spacing: 0.5px;
+}
+.page-head h2::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 5px;
+  bottom: 5px;
+  width: 4px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--zhu), var(--jin));
+}
+
+/* 输入 / 选择框：聚焦时主色柔和光环 */
+.el-input__wrapper,
+.el-textarea__inner,
+.el-select__wrapper {
+  border-radius: var(--radius-sm);
+  transition: box-shadow 0.15s ease;
+}
+.el-input__wrapper.is-focus,
+.el-textarea__inner:focus,
+.el-select__wrapper.is-focused {
+  box-shadow: 0 0 0 1px var(--zhu) inset, 0 0 0 3px var(--zhu-soft) !important;
+}
+
+/* 主按钮：轻微渐变 + 悬停提升 */
+.el-button--primary {
+  box-shadow: 0 1px 3px rgba(168, 50, 45, 0.25);
+  transition: box-shadow 0.15s ease, transform 0.15s ease, filter 0.15s ease;
+}
+.el-button--primary:hover {
+  filter: brightness(1.06);
+  box-shadow: 0 2px 6px rgba(168, 50, 45, 0.32);
+}
+.el-button--primary:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px rgba(168, 50, 45, 0.2);
+}
+
+/* 统计卡与面板：悬停轻微上浮（纸面被拿起的感觉，克制幅度） */
+.panel {
+  transition: box-shadow 0.18s ease, transform 0.18s ease, border-color 0.18s ease;
+}
+.panel:hover {
+  box-shadow: var(--shadow-2);
+  border-color: var(--line-strong);
+}
+
+/* 标签页：active 下划线加粗主色 */
+.el-tabs__active-bar {
+  height: 2.5px;
+  border-radius: 2px;
+}
+.el-tabs__item {
+  font-size: 14px;
+  transition: color 0.15s ease;
+}
+.el-tabs__item.is-active {
+  font-weight: 600;
+}
+
+/* 对话框：更大圆角 + 柔和遮罩 */
+.el-dialog {
+  border-radius: 12px;
+  box-shadow: 0 12px 48px rgba(50, 40, 25, 0.22);
+}
+.el-overlay {
+  backdrop-filter: blur(2px);
+}
+
+/* 消息气泡圆角 */
+.el-message {
+  border-radius: 10px;
+  box-shadow: var(--shadow-2);
+}
+
+/* 开关选中色与主色一致（Element 默认偏蓝） */
+.el-switch.is-checked .el-switch__core {
+  background: var(--song);
+  border-color: var(--song);
+}
+
+/* 复选/单选选中主色 */
+.el-checkbox__input.is-checked .el-checkbox__inner,
+.el-radio__input.is-checked .el-radio__inner {
+  background: var(--zhu);
+  border-color: var(--zhu);
+}
+
+/* 数字更利落：统计值 / 徽章用等宽数字 */
+.stat-value,
+.badge,
+.pill {
+  font-variant-numeric: tabular-nums;
+}
+
+/* 表格行圆角感：首尾单元格 hover 时内圆角 */
+.el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell:first-child {
+  border-top-left-radius: var(--radius-sm);
+  border-bottom-left-radius: var(--radius-sm);
+}
+.el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell:last-child {
+  border-top-right-radius: var(--radius-sm);
+  border-bottom-right-radius: var(--radius-sm);
+}
+
+/* 下拉/弹出层圆角 */
+.el-popper.is-light {
+  border-radius: 10px;
+}
+
+/* 空状态插画感：加一点淡装饰 */
+.empty {
+  position: relative;
+}
+.empty::before {
+  content: '· · ·';
+  display: block;
+  color: var(--ink-4);
+  font-size: 18px;
+  letter-spacing: 6px;
+  margin-bottom: 4px;
+}

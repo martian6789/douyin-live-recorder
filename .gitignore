@@ -1,0 +1,30 @@
+node_modules/
+out/
+dist/
+
+# 绿色版运行目录：内含 Chromium 二进制（~566MB）与用户数据
+app/
+# 用户数据目录（任何位置都不能上传）：抖音 Cookie 登录态、录制历史、日志
+LiveReview-Data/
+**/LiveReview-Data/
+credentials.json
+config.json
+history.json
+streamers.json
+search-debug.json
+logs/
+recordings/
+
+# 构建产物 / 大二进制
+*.zip
+*.exe
+*.asar
+*.7z
+*.log
+
+.DS_Store
+
+# ffmpeg 本体 105MB，超过 GitHub 单文件 100MB 限制，构建时自备
+resources/ffmpeg.exe
+resources/_tmp/
+resources/*.zip

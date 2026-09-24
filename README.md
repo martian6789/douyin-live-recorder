@@ -1,3 +1,5 @@
+![主界面](docs/screenshot-main.png)
+
 # 直播复盘工具（LiveReview）
 
 多平台直播录制 / 监控 / 弹幕归档 / 本地转写工具。

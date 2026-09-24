@@ -17,56 +17,38 @@ Electron 44 + electron-vite 5 + Vue 3.5 + TypeScript + Element Plus。
 npm install
 npm run dev        # 开发模式（热更新）
 npm run build      # 只构建，产物在 out/
-npm run dist       # 打包 Windows 单文件便携版，产物在 dist/
+npm run dist       # 打包绿色版 zip，产物在 dist/
 npm run typecheck  # 主进程 + 渲染进程类型检查
 ```
 
-### 打包产物（两种形态，同一次 `npm run dist` 一起出）
+### 打包产物（v0.1.9 起只有绿色版 zip）
 
 ```
-dist/LiveReview-0.1.1-portable.exe      # 单文件便携版（免安装，双击即用）
-dist/LiveReview-0.1.1-x64.zip           # 绿色版（解压一次，直接跑里面的 exe）
+dist/LiveReview-<version>-x64.zip     # 解压到固定目录，双击里面的 LiveReview.exe 即用
 ```
 
-**单文件便携版**
-- **免安装**：不写注册表、不建开始菜单。
-- 代价是**每次启动都要把自己解压一遍** —— 它是 NSIS 自解压器，一次启动在 `%TEMP%` 落两处：
-  - ① `%TEMP%\nsXXXXX.tmp\`（= NSIS 的 `$PLUGINSDIR`，**每次启动随机一个新名字**，长度还会变）
-    里先放内嵌载荷 `app-64.7z`（≈128 MB），再就地解开成 `7z-out\`（≈566 MB）当中间产物；
-  - ② 复制到运行目录 `%TEMP%\<ksuid>\`（= `$INSTDIR`）。这个 ksuid 是**打包时**用
-    `generateKsuid()` 生成的（`NsisTarget.js:246` 的 `unpackDirName || generateKsuid()`），
-    所以**同一份 exe 每次启动都用同一个名字**；而启动脚本开头就有一句 `RMDir /r $INSTDIR`
-    —— 上次强杀留下的运行目录，下次启动时会被自己删掉。
-  - 于是**真正会永久堆积的只有 ①**：它每次换名，永远没人复用。一次强杀留下
-    `app-64.7z`（≈128 MB）+ `7z-out\`（≈566 MB）≈ **约 695 MB**，杀几次堆几次。
-    （② 虽然也有 ≈566 MB，但同一份 exe 再次启动时会自清 —— 前提是你还能再启动它。）
-- 目录名两个都不可预测（一个随机长度可变、一个每次构建换新 ksuid），
-  所以**清理不能靠名字匹配**，只能靠内容指纹 —— 见下。
-  - **两道防线**（`src/main/cleanup.ts`），确保强杀不再留大文件：
-    - ① **治本 —— 开机自清**：应用一旦被 `ExecWait` 拉起来，NSIS 已 park 在 `portable.nsi:86` 不再动，
-      立刻把自己 `$PLUGINSDIR` 里的 `app-64.7z`（≈128 MB）**和** `7z-out\`（≈566 MB，
-      已从它复制到运行目录当副本、纯冗余）连同几个插件 dll 一起删掉。之后再被强杀，`%TEMP%`
-      里只剩一个空壳目录（≈0.1 MB），而不是 695 MB。
-    - ② **回收历史残留**：上一轮被强杀、或杀在解压阶段来不及自清的目录，由下一次启动的
-      sweep 认领删除。认领**不看目录名**（都不可靠），按「越抗删越优先」排：
-      `*.lr-del` 后缀 → `resources\funasr_runner.py` / `app.asar` → `LiveReview.exe`；
-      **「只剩 `app-64.7z`」这种窗口改用哈希认领** —— 因为 `extractAppPackage.nsh` 用
-      `SetCompress off` 把载荷**原样**嵌在 exe 里，应用读出自己那份的偏移/长度并采样 SHA-256，
-      与残留 `app-64.7z` 比对，**完全一致才认领**：既覆盖「只留载荷」的窗口，又不可能误删别家应用。
-    安全边界：**先改名，改名成功才删** —— 运行中的实例其文件被独占，改名必然失败 → 直接放过，
-    绝不会把正在跑的实例删坏；含 `LiveReview-Data` 的一律不动（那是你的绿色版数据）；
-    删不掉（被杀软/索引器短暂占用，`EBUSY`）就把名字改回去或留作 `.lr-del`，下一轮再来。
-    遍历保持异步、目录之间让出事件循环、**整趟有墙钟死线**，**不会卡住界面**也不会拖慢退出。
-- **数据跟着 exe 走**：首次运行在 exe 同级建 `LiveReview-Data/`（配置与录像都在里面）。
-  把 exe 和这个文件夹一起拷走，一切照旧；exe 所在目录不可写时自动退回 `%APPDATA%\live-review`。
+**为什么不再出单文件便携版**：便携版是 NSIS 自解压器，每次启动都要把约 566 MB 的
+**未签名 Chromium** 解压进 `%TEMP%`，再从那个临时目录运行。「未签名程序 + 从系统临时目录
+运行」正是游戏反作弊的高危特征 —— 实测后台挂着便携版再启动三角洲行动必报 **ACE 1067105**，
+关掉本程序立刻正常。这是**运行形态**问题，不是抢资源：降优先级、暂停轮询都治不了。
+所以 v0.1.9 起 `package.json` 去掉了 `portable` 构建目标，只出 zip。
 
-**绿色版 zip（推荐长期使用）**
-- 解压到任意位置，直接双击里面的 `LiveReview.exe`：**不落临时目录、秒启动、零残留**，
-  数据同样在 exe 同级 `LiveReview-Data/`。
-- 想升级就解压新包覆盖（`LiveReview-Data/` 不会被覆盖）。
+**绿色版（唯一形态，也是推荐形态）**
+- 解压到固定目录（例如 `E:\AI\live-review\app\`），直接双击 `LiveReview.exe`：
+  **不落临时目录、秒启动、零残留**。
+- 数据目录 = exe 同级 `LiveReview-Data/`（配置、录像、抖音 Cookie 登录态都在里面，
+  已排除在 git 之外）。升级时解压新包覆盖程序文件即可，数据目录不受影响。
+- 不确定自己跑的是不是固定目录形态，用仓库里的 `检查运行环境.cmd` 一键看进程路径。
+- `src/main/cleanup.ts` 保留了下来：它负责回收历史上便携版在 `%TEMP%` 留下的残骸
+  （按内容指纹认领，不看目录名；先改名成功才删，绝不动运行中的实例）。
 
-> 已经内置 ffmpeg 9.0.2，目标机器不用装任何东西。ffprobe 没有内置 ——
-> 它一个就 100 MB，而时长/分辨率 `ffmpeg -i` 自己就能给（`src/main/ffmpeg.ts` 里有兜底解析）。
+> **ffmpeg**：内置 ffmpeg 9.0.2（放在 `resources/ffmpeg.exe`），目标机器不用装任何东西。
+> ffprobe 没有内置 —— 它一个就 100 MB，而时长/分辨率 `ffmpeg -i` 自己就能给
+> （`src/main/ffmpeg.ts` 里有兜底解析）。
+>
+> **注意：本仓库不含 `resources/ffmpeg.exe`** —— 它 105 MB，超过 GitHub 单文件 100 MB
+> 限制，已被 `.gitignore` 排除。自己构建时放一份到 `resources/ffmpeg.exe` 即可
+> （Windows 推荐 gyan.dev 的 essentials build）。没有它也能跑，只是录制/预览会找不到编码器。
 
 改回安装版：把 `package.json` 里 `build.win.target` 换成 `nsis`（不要设 `portable.unpackDirName`，
 理由见上：它既不省解压，还会让第二次启动把正在运行的实例的文件删掉）。
